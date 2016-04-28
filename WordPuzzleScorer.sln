@@ -9,6 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordPuzzleScorer.Tests.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordPuzzleScorer.Tests.Acceptance", "WordPuzzleScorer.Tests.Acceptance\WordPuzzleScorer.Tests.Acceptance.csproj", "{611A6F7E-C56C-46F2-849D-93A9D335A9EE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{720DF75D-B6A7-459B-929D-F779560D6815}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordPuzzleScorer.UI", "WordPuzzleScorer.UI\WordPuzzleScorer.UI.csproj", "{13EFE82E-5C1B-4BFF-82B8-B10D238C0ABC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +36,10 @@ Global
 		{611A6F7E-C56C-46F2-849D-93A9D335A9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{611A6F7E-C56C-46F2-849D-93A9D335A9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{611A6F7E-C56C-46F2-849D-93A9D335A9EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13EFE82E-5C1B-4BFF-82B8-B10D238C0ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13EFE82E-5C1B-4BFF-82B8-B10D238C0ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13EFE82E-5C1B-4BFF-82B8-B10D238C0ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13EFE82E-5C1B-4BFF-82B8-B10D238C0ABC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
