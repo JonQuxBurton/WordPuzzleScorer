@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.AutoMoq;
+using Ploeh.AutoFixture.Xunit2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,37 +13,32 @@ namespace WordPuzzleScorer.Tests
 {
     public class ScoreShould
     {
-        [Fact]
-        public void ReturnTotalScoreZeroWhenNoWords()
+        [Theory, AutoMoqData]
+        public void ReturnTotalScoreZeroWhenNoWords(Score score)
         {
-            var score = new Score();
-
             Assert.Equal(0, score.TotalScore);
         }
 
-        [Fact]
-        public void ReturnTotalScoreForWord()
+        [Theory, AutoMoqData]
+        public void ReturnTotalScoreForWord(Score score)
         {
-            var score = new Score();
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
 
             Assert.Equal(3, score.TotalScore);
         }
 
-        [Fact]
-        public void ReturnTotalScoreForWords()
+        [Theory, AutoMoqData]
+        public void ReturnTotalScoreForWords(Score score)
         {
-            var score = new Score();
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
 
             Assert.Equal(6, score.TotalScore);
         }
 
-        [Fact]
-        public void ReturnTotalScoreForInvalidWords()
+        [Theory, AutoMoqData]
+        public void ReturnTotalScoreForInvalidWords(Score score)
         {
-            var score = new Score();
             score.WordScores.Add(new WordScore("AAA", false, 0, 3));
             
             Assert.Equal(0, score.TotalScore);

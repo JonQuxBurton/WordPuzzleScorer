@@ -10,12 +10,10 @@ namespace WordPuzzleScorer.Tests
 {
     public class DefaultLineParserShould
     {
-        [Fact]
-        public void ParseLine()
+        [Theory, AutoMoqData]
+        public void ParseLine(DefaultLineParser parser)
         {
             var line = "AXE";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, Enumerable.Empty<int>());
 
@@ -23,12 +21,10 @@ namespace WordPuzzleScorer.Tests
             Assert.Equal("AXE", words.First().Value);
         }
 
-        [Fact]
-        public void ParseTwoWordLine()
+        [Theory, AutoMoqData]
+        public void ParseTwoWordLine(DefaultLineParser parser)
         {
             var line = "AXE BEE";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, Enumerable.Empty<int>());
 
@@ -37,12 +33,10 @@ namespace WordPuzzleScorer.Tests
             Assert.Equal("BEE", words.Skip(1).First().Value);
         }
 
-        [Fact]
-        public void ParseLineWithBonusTile()
+        [Theory, AutoMoqData]
+        public void ParseLineWithBonusTile(DefaultLineParser parser)
         {
             var line = "AXE";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, new int[] { 2 });
 
@@ -51,24 +45,21 @@ namespace WordPuzzleScorer.Tests
         }
 
         [Theory]
-        [InlineData(" AXE")]
-        [InlineData("AXE ")]
-        [InlineData(" AXE ")]
-        public void ParseLinesWithSpaces(string inputLine)
+        [InlineAutoMoqData(" AXE")]
+        [InlineAutoMoqData("AXE ")]
+        [InlineAutoMoqData(" AXE ")]
+        public void ParseLinesWithSpaces(string inputLine, DefaultLineParser parser)
         {
-            var parser = new DefaultLineParser();
-
             var words = parser.Parse(inputLine, Enumerable.Empty<int>());
 
             Assert.Equal(1, words.Count());
             Assert.Equal("AXE", words.First().Value);
         }
 
-        [Fact]
-        public void ParseLineWithMulitpleSpaces()
+        [Theory, AutoMoqData]
+        public void ParseLineWithMulitpleSpaces(DefaultLineParser parser)
         {
             var inputLine = "AXE  DUCK";
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(inputLine, Enumerable.Empty<int>());
 
@@ -77,12 +68,10 @@ namespace WordPuzzleScorer.Tests
             Assert.Equal("DUCK", words.Skip(1).First().Value);
         }
 
-        [Fact]
-        public void ParseTwoWordLineWithBonusTiles()
+        [Theory, AutoMoqData]
+        public void ParseTwoWordLineWithBonusTiles(DefaultLineParser parser)
         {
             var line = "AXE BEE";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, new int[] { 2, 6 });
 
@@ -93,12 +82,10 @@ namespace WordPuzzleScorer.Tests
             Assert.Equal(2, words.Skip(1).First().BonusTiles.First());
         }
 
-        [Fact]
-        public void PreserveBonusTilesIndexesWhenRemovingSpaces()
+        [Theory, AutoMoqData]
+        public void PreserveBonusTilesIndexesWhenRemovingSpaces(DefaultLineParser parser)
         {
             var line = " AXE  DUCK";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, new int[] { 6 });
 
@@ -106,12 +93,10 @@ namespace WordPuzzleScorer.Tests
             Assert.Equal(0, words.Skip(1).First().BonusTiles.First());
         }
 
-        [Fact]
-        public void ReturnsNoWordsWhenLineIsAllSpaces()
+        [Theory, AutoMoqData]
+        public void ReturnsNoWordsWhenLineIsAllSpaces(DefaultLineParser parser)
         {
             var line = "   ";
-
-            var parser = new DefaultLineParser();
 
             var words = parser.Parse(line, new int[] { 6 });
 
