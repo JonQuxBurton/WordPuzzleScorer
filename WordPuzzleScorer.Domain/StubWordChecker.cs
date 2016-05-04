@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace WordPuzzleScorer.Domain
 {
-    public class DefaultWordChecker : IWordChecker
+    public class StubWordChecker : IWordChecker
     {
         public bool IsValid(string word)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

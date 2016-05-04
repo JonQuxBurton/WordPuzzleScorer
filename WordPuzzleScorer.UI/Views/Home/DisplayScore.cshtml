@@ -1,0 +1,47 @@
+﻿@model WordPuzzleScorer.UI.Models.ScoreViewModel
+
+@section head
+{
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery-ui-1.11.4.js"></script>
+}
+
+<h2>DisplayScore</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Word</th>
+            <th>Bonus</th>
+            <th>IsValid</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td colspan="3">Total</td>
+            <td>@Model.TotalScore</td>
+        </tr>
+    </tfoot>
+    <tbody>
+    @foreach (var wordScore in @Model.WordScores)
+    {
+        <tr>
+            <td>@wordScore.Word</td>
+            <td>
+                @if (wordScore.LetterBonusIndexes.Any())
+                {
+                    for (int i = 0; i < wordScore.LetterBonusIndexes.Count(); i++)
+                    {
+                        <span class="glyphicon glyphicon-star"></span>
+                    }
+                }
+            </td>
+
+            <td>@wordScore.IsValid</td>
+            <td>@wordScore.TotalScore</td>
+        </tr>
+    }
+    </tbody>
+</table>

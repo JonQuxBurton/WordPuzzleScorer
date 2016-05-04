@@ -42,7 +42,7 @@
     <Compile Include="Answer.cs" />
     <Compile Include="DefaultScorer.cs" />
     <Compile Include="DefaultWordScorer.cs" />
-    <Compile Include="DefaultWordChecker.cs" />
+    <Compile Include="StubWordChecker.cs" />
     <Compile Include="ILetterScorer.cs" />
     <Compile Include="ILineParser.cs" />
     <Compile Include="IScorer.cs" />

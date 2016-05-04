@@ -1,31 +1,248 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@section head
+{
+<script src="~/Scripts/knockout-3.4.0.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-ui-1.11.4.js"></script>
+<script src="https://cdn.jsdelivr.net/lodash/4.7.0/lodash.min.js"></script>
+
+<style>
+    .letterArea {
+        margin-bottom: 2rem;
+    }
+
+    .letter {
+        color: blue;
+        font-weight: bold;
+        border: 3px solid blue;
+        width: 5.8rem;
+        height: 5.8rem;
+        text-align: center;
+        padding-top: 1.8rem;
+        margin-right: 0.4rem;
+        display: inline-block;
+        background-color: white;
+    }
+
+    .slot {
+        color: green;
+        font-weight: bold;
+        border: 3px dotted green;
+        width: 6rem;
+        height: 6rem;
+        text-align: center;
+        padding-top: 1.8rem;
+        /*margin-right: 0.2rem;*/
+        display: inline-block;
+        position: absolute;
+    }
+
+    .done {
+        background-color: lightgray;
+    }
+
+    .answerDiv {
+        height: 30rem;
+        position: relative;
+    }
+
+    .glyphicon {
+        font-size: 3.3rem;
+    }
+
+    .glyphicon-ok {
+        color: green;
+    }
+
+    .glyphicon-remove {
+        color: red;
+    }
+</style>
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<h2>Letters</h2>
+<div data-bind="foreach: lettersSplit" class="letterArea">
+    <div class="draggable letter">
+        <span data-bind="text: $data"></span>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+<h2>Answer</h2>
+<div class="answerDiv">
+    <span data-bind="foreach: answer">
+        <div data-bind="attr: {'id': 'slot_' + $index()}, css: (isDone) ? 'done' : '', style: { left: (x*7) + 'rem', top: (y*7) + 'rem' }" class="droppable slot">
+            <div data-bind="visible: isBonusTile" class="glyphicon glyphicon-star" style="position:absolute; color: lightgreen; font-size:1.8rem; left:1.9rem; top: 1.6rem;"></div>
+            <div data-bind="text: letterValue" style="position:absolute; left:2.2rem;"></div>&nbsp;
+        </div>
+
+    </span>
 </div>
+
+<div>
+    @using (Html.BeginForm("DisplayScore", "Home"))
+    {
+        <input type="submit" class="btn btn-primary" value="Submit Answer" id="submitButton" />
+    }
+</div>
+
+
+@section scripts
+{
+<script>
+
+    $(function () {
+
+        var letters = "GOOSEWLWAN";
+
+        var puzzleLines = [{ origin: { x: 0, y: 0 }, length: 5, direction: 'horizontal', bonusTiles : [1, 3] },
+                            { origin: { x: 1, y: 0 }, length: 3, direction: 'vertical', bonusTiles: [0] },
+                            { origin: { x: 3, y: 0 }, length: 4, direction: 'vertical', bonusTiles: [0] }];
+
+        var PuzzleViewModel = function (letters) {
+            this.letters = ko.observable(letters);
+
+            this.answer = ko.observableArray();
+
+            this.answerBacking = [];
+
+            this.init = function () {
+
+                this.answerBacking = [];
+
+                var that = this;
+
+                _(puzzleLines).forEach(function (line) {
+
+                    for (var i = 0; i < line.length; i++)
+                    {
+                        var x = line.origin.x;
+                        var y = line.origin.y;
+
+                        var isBonusTile = false;
+
+                        var bonusTile = _.find(line.bonusTiles, function (item) { return item == i;  });
+
+                        if (!_.isUndefined(bonusTile))
+                        {
+                            isBonusTile = true;
+                        }
+
+                        if (line.direction == 'horizontal') {
+                            x += i;
+                        } else {
+                            y += i;
+                        }
+
+                        var doubleTile = _.find(that.answerBacking, function (o) { return o.x == x && o.y == y; });
+
+                        if (_.isUndefined(doubleTile)) {
+                            that.answerBacking.push({ letterValue: " ", isDone: false, x: x, y: y, isBonusTile: isBonusTile })
+                        }
+                    }
+                });
+
+                this.refreshAnswer();
+            }
+
+            this.refreshAnswer = function () {
+
+                this.answer.removeAll();
+
+                for (var i = 0; i < this.answerBacking.length; i++) {
+                    this.answer.push(this.answerBacking[i]);
+                }
+
+                enabledDragAndDrop();
+            };
+
+            this.refreshAnswer();
+
+            this.lettersSplit = ko.pureComputed(function () {
+
+                return this.letters().split("");
+
+            }, this);
+        };
+
+        var puzzleViewModel = new PuzzleViewModel(letters);
+
+        function init() {
+            puzzleViewModel.init();
+        }
+
+        init();
+
+        ko.applyBindings(puzzleViewModel);
+
+        var sourceDiv;
+        var sourceLetter;
+
+        $(".draggable").draggable({
+            revert: true,
+            revertDuration: 100,
+            start: function (event, ui) {
+
+                sourceDiv = $(this);
+                sourceLetter = ko.contextFor($(this).find("span").get(0)).$data;
+
+            },
+            stop: function (event, ui) {
+                sourceDiv = null;
+                sourceLetter = null;
+            }
+        });
+
+        function enabledDragAndDrop() {
+
+            $(".droppable").droppable({
+                drop: function (event, ui) {
+
+                    sourceDiv.addClass("done");
+                    sourceDiv.draggable("destroy")
+
+                    var slot = $(this).attr('id');
+                    var id = parseInt(slot.split("_")[1]);
+
+                    puzzleViewModel.answerBacking[id].letterValue = sourceLetter;
+                    puzzleViewModel.answerBacking[id].isDone = true;
+
+                    puzzleViewModel.refreshAnswer();
+                }
+            });
+        }
+
+        $('#submitButton').click(function () {
+
+            var answer = [];
+
+            _(puzzleLines).forEach(function (line) {
+
+                var answerLine = [];
+
+                for (var i = 0; i < line.length; i++) {
+                    var x = line.origin.x;
+                    var y = line.origin.y;
+
+                    if (line.direction == 'horizontal') {
+                        x += i;
+                    } else {
+                        y += i;
+                    }
+
+                    var tile = _.find(puzzleViewModel.answerBacking, function (o) { return o.x == x && o.y == y; });
+
+                    answerLine.push(tile.letterValue);
+                }
+
+                answer.push(answerLine.join(""));
+            });
+
+            _.forEach(answer, function (value, index) {
+                $('form').append('<input type="hidden" name="AnswerLines[' + index + ']" value="' + value + '" />');
+            });
+        });
+
+        enabledDragAndDrop();
+    });
+
+</script>
+}

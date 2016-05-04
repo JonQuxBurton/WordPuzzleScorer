@@ -67,7 +67,7 @@ namespace WordPuzzleScorer.Tests.Acceptance
             
             Assert.Equal(inputLine.Split(' ')[1], score.WordScores.Skip(1).First().Word);
             Assert.True(score.WordScores.Skip(1).First().IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.Skip(1).First().TotalScore);
+            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
 
             Assert.Equal(expectedScore1 + expectedScore2, score.TotalScore);
         }
@@ -88,13 +88,13 @@ namespace WordPuzzleScorer.Tests.Acceptance
             Assert.True(score.WordScores.First().IsValid);
             Assert.Equal(expectedScore1, score.WordScores.First().TotalScore);
 
-            Assert.Equal(inputLine.Split(' ')[1], score.WordScores.Skip(1).First().Word);
-            Assert.True(score.WordScores.Skip(1).First().IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.Skip(1).First().TotalScore);
+            Assert.Equal(inputLine.Split(' ')[1], score.WordScores.ElementAt(1).Word);
+            Assert.True(score.WordScores.ElementAt(1).IsValid);
+            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
 
-            Assert.Equal(inputLine.Split(' ')[2], score.WordScores.Skip(2).First().Word);
-            Assert.True(score.WordScores.Skip(2).First().IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.Skip(2).First().TotalScore);
+            Assert.Equal(inputLine.Split(' ')[2], score.WordScores.ElementAt(2).Word);
+            Assert.True(score.WordScores.ElementAt(2).IsValid);
+            Assert.Equal(expectedScore2, score.WordScores.ElementAt(2).TotalScore);
 
             Assert.Equal(expectedScore1 + expectedScore2 + expectedScore3, score.TotalScore);
         }
@@ -130,7 +130,7 @@ namespace WordPuzzleScorer.Tests.Acceptance
             var score = scorer.Score(answer);
 
             Assert.Equal(expectedScore1, score.WordScores.First().TotalScore);
-            Assert.Equal(expectedScore2, score.WordScores.Skip(1).First().TotalScore);
+            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
             Assert.Equal(expectedScore1 + expectedScore2, score.TotalScore);
         }
 
