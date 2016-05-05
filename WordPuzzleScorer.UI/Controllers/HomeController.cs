@@ -17,7 +17,7 @@ namespace WordPuzzleScorer.UI.Controllers
         }
 
         [HttpPost]
-        public ActionResult DisplayScore(AnswerViewModel answer)
+        public ActionResult Score(AnswerViewModel answer)
         {
             ILineParser parser = new DefaultLineParser();
             IWordChecker wordChecker = new StubWordChecker();

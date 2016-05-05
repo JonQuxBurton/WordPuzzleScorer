@@ -1,13 +1,6 @@
 ﻿@model WordPuzzleScorer.UI.Models.ScoreViewModel
 
-@section head
-{
-    <script src="~/Scripts/knockout-3.4.0.js"></script>
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/jquery-ui-1.11.4.js"></script>
-}
-
-<h2>DisplayScore</h2>
+<h2>Score</h2>
 
 <table class="table">
     <thead>
@@ -39,9 +32,35 @@
                 }
             </td>
 
-            <td>@wordScore.IsValid</td>
+            <td>
+                @if (@wordScore.IsValid)
+                {
+                    <span class="glyphicon glyphicon-ok"></span>
+                }
+                else
+                {
+                    <span class="glyphicon glyphicon-remove"></span>
+                }
+
+            </td>
             <td>@wordScore.TotalScore</td>
         </tr>
     }
     </tbody>
 </table>
+
+<input type="button" class="btn btn-primary" value="Play again" id="playAgainButton" />
+
+@section scripts
+{
+    <script>
+
+        $(function () {
+
+            $('#playAgainButton').click(function () { window.location = 'Index'; });
+
+    });
+
+    </script>
+}
+

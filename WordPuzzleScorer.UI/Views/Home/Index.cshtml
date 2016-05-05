@@ -1,64 +1,4 @@
-﻿@section head
-{
-<script src="~/Scripts/knockout-3.4.0.js"></script>
-<script src="~/Scripts/jquery-1.10.2.js"></script>
-<script src="~/Scripts/jquery-ui-1.11.4.js"></script>
-<script src="https://cdn.jsdelivr.net/lodash/4.7.0/lodash.min.js"></script>
-
-<style>
-    .letterArea {
-        margin-bottom: 2rem;
-    }
-
-    .letter {
-        color: blue;
-        font-weight: bold;
-        border: 3px solid blue;
-        width: 5.8rem;
-        height: 5.8rem;
-        text-align: center;
-        padding-top: 1.8rem;
-        margin-right: 0.4rem;
-        display: inline-block;
-        background-color: white;
-    }
-
-    .slot {
-        color: green;
-        font-weight: bold;
-        border: 3px dotted green;
-        width: 6rem;
-        height: 6rem;
-        text-align: center;
-        padding-top: 1.8rem;
-        /*margin-right: 0.2rem;*/
-        display: inline-block;
-        position: absolute;
-    }
-
-    .done {
-        background-color: lightgray;
-    }
-
-    .answerDiv {
-        height: 30rem;
-        position: relative;
-    }
-
-    .glyphicon {
-        font-size: 3.3rem;
-    }
-
-    .glyphicon-ok {
-        color: green;
-    }
-
-    .glyphicon-remove {
-        color: red;
-    }
-</style>
-}
-
+﻿
 <h2>Letters</h2>
 <div data-bind="foreach: lettersSplit" class="letterArea">
     <div class="draggable letter">
@@ -68,17 +8,17 @@
 
 <h2>Answer</h2>
 <div class="answerDiv">
-    <span data-bind="foreach: answer">
+    <div data-bind="foreach: answer">
         <div data-bind="attr: {'id': 'slot_' + $index()}, css: (isDone) ? 'done' : '', style: { left: (x*7) + 'rem', top: (y*7) + 'rem' }" class="droppable slot">
-            <div data-bind="visible: isBonusTile" class="glyphicon glyphicon-star" style="position:absolute; color: lightgreen; font-size:1.8rem; left:1.9rem; top: 1.6rem;"></div>
-            <div data-bind="text: letterValue" style="position:absolute; left:2.2rem;"></div>&nbsp;
+            <div data-bind="visible: isBonusTile" class="glyphicon glyphicon-star bonusTile"></div>
+            <div data-bind="text: letterValue" class="tileLetter"></div>
         </div>
 
-    </span>
+    </div>
 </div>
 
 <div>
-    @using (Html.BeginForm("DisplayScore", "Home"))
+    @using (Html.BeginForm("Score", "Home"))
     {
         <input type="submit" class="btn btn-primary" value="Submit Answer" id="submitButton" />
     }

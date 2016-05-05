@@ -22,3 +22,70 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.glyphicon {
+    font-size: 1.8rem;
+}
+
+.glyphicon-ok {
+    color: green;
+}
+
+.glyphicon-remove {
+    color: red;
+}
+
+.glyphicon-star {
+    color: lightskyblue;
+}
+
+    .letterArea {
+        margin-bottom: 2rem;
+    }
+
+    .letter {
+        color: blue;
+        font-weight: bold;
+        border: 3px solid blue;
+        width: 5.8rem;
+        height: 5.8rem;
+        text-align: center;
+        padding-top: 1.8rem;
+        margin-right: 0.4rem;
+        display: inline-block;
+        background-color: white;
+    }
+
+    .slot {
+        color: green;
+        font-weight: bold;
+        border: 3px dotted green;
+        width: 6rem;
+        height: 6rem;
+        text-align: center;
+        padding-top: 1.8rem;
+        /*margin-right: 0.2rem;*/
+        display: inline-block;
+        position: absolute;
+    }
+
+    .tileLetter {
+        position:absolute; 
+        left:2.2rem;
+    }
+
+.done {
+    background-color: lightgray;
+}
+
+.answerDiv {
+    height: 30rem;
+    position: relative;
+}
+
+.bonusTile {
+    position:absolute; 
+    font-size:2.6rem; 
+    left:1.4rem; 
+    top: 1.1rem;
+}
