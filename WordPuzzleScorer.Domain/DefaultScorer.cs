@@ -33,7 +33,8 @@ namespace WordPuzzleScorer.Domain
 
                 foreach (var word in lineWords)
                 {
-                    score.WordScores.Add(this.wordScorer.Score(word));
+                    if (word.Value.Length > 1)
+                        score.WordScores.Add(this.wordScorer.Score(word));
                 }
             }
 

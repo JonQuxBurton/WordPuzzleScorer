@@ -12,6 +12,20 @@ namespace WordPuzzleScorer.Tests.Acceptance
 {
     public class DefaultScorerShould
     {
+        [Theory, AutoMoqData]
+        public void NotScoreAOneLetterWord(Answer answer, [Frozen] Mock<IWordChecker> wordCheckerStub, DefaultWordScorer wordScorer, DefaultLineParser parser)
+        {
+            string inputWord = "A";
+            answer.Lines.Add(new Line(inputWord, Enumerable.Empty<int>()));
+
+            wordCheckerStub.Setup(x => x.IsValid(inputWord)).Returns(true);
+            var scorer = new DefaultScorer(parser, wordScorer);
+
+            var score = scorer.Score(answer);
+
+            Assert.Equal(0, score.WordScores.Count);
+        }
+
         [Theory]
         [InlineAutoMoqDataAttribute("AXE", 3)]
         [InlineAutoMoqDataAttribute("GOOSE", 5)]
