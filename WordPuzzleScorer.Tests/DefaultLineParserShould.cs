@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WordPuzzleScorer.Domain;
 using Xunit;
+using FluentAssertions;
 
 namespace WordPuzzleScorer.Tests
 {
@@ -17,8 +18,8 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, Enumerable.Empty<int>());
 
-            Assert.Equal(1, words.Count());
-            Assert.Equal("AXE", words.First().Value);
+            words.Should().HaveCount(1);
+            words.First().Value.Should().Be(line);
         }
 
         [Theory, AutoMoqData]
@@ -28,9 +29,9 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, Enumerable.Empty<int>());
 
-            Assert.Equal(2, words.Count());
-            Assert.Equal("AXE", words.First().Value);
-            Assert.Equal("BEE", words.Skip(1).First().Value);
+            words.Should().HaveCount(2);
+            words.Should().Contain(x => x.Value == "AXE");
+            words.Should().Contain(x => x.Value == "BEE");
         }
 
         [Theory, AutoMoqData]
@@ -40,8 +41,7 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, new int[] { 2 });
 
-            Assert.Equal(1, words.First().BonusTiles.Count());
-            Assert.Equal(2, words.First().BonusTiles.First());
+            words.First().BonusTiles.Should().ContainSingle(x => x == 2);
         }
 
         [Theory]
@@ -52,8 +52,7 @@ namespace WordPuzzleScorer.Tests
         {
             var words = parser.Parse(inputLine, Enumerable.Empty<int>());
 
-            Assert.Equal(1, words.Count());
-            Assert.Equal("AXE", words.First().Value);
+            words.Should().ContainSingle(x => x.Value == "AXE");
         }
 
         [Theory, AutoMoqData]
@@ -63,9 +62,9 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(inputLine, Enumerable.Empty<int>());
 
-            Assert.Equal(2, words.Count());
-            Assert.Equal("AXE", words.First().Value);
-            Assert.Equal("DUCK", words.Skip(1).First().Value);
+            words.Should().HaveCount(2);
+            words.Should().Contain(x => x.Value == "AXE");
+            words.Should().Contain(x => x.Value == "DUCK");
         }
 
         [Theory, AutoMoqData]
@@ -75,11 +74,8 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, new int[] { 2, 6 });
 
-            Assert.Equal(1, words.First().BonusTiles.Count());
-            Assert.Equal(2, words.First().BonusTiles.First());
-
-            Assert.Equal(1, words.Skip(1).First().BonusTiles.Count());
-            Assert.Equal(2, words.Skip(1).First().BonusTiles.First());
+            words.Single(x => x.Value == "AXE").BonusTiles.Should().ContainSingle(x => x == 2);
+            words.Single(x => x.Value == "BEE").BonusTiles.Should().ContainSingle(x => x == 2);
         }
 
         [Theory, AutoMoqData]
@@ -89,8 +85,7 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, new int[] { 6 });
 
-            Assert.Equal(1, words.Skip(1).First().BonusTiles.Count());
-            Assert.Equal(0, words.Skip(1).First().BonusTiles.First());
+            words.Single(x => x.Value == "DUCK").BonusTiles.Should().ContainSingle(x => x == 0);
         }
 
         [Theory, AutoMoqData]
@@ -100,7 +95,7 @@ namespace WordPuzzleScorer.Tests
 
             var words = parser.Parse(line, new int[] { 6 });
 
-            Assert.Equal(0, words.Count());
+            words.Should().BeEmpty();
         }
     }
 }
