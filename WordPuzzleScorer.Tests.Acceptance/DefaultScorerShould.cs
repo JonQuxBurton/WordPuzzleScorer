@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WordPuzzleScorer.Domain;
 using Xunit;
+using FluentAssertions;
 
 namespace WordPuzzleScorer.Tests.Acceptance
 {
@@ -23,7 +24,7 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(0, score.WordScores.Count);
+            score.WordScores.Should().BeEmpty();
         }
 
         [Theory]
@@ -38,10 +39,13 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(1, score.WordScores.Count);
-            Assert.Equal(inputWord, score.WordScores.First().Word);
-            Assert.True(score.WordScores.First().IsValid);
-            Assert.Equal(expectedScore, score.WordScores.First().TotalScore);
+            score.WordScores.Should().ContainSingle()
+                            .Which.ShouldBeEquivalentTo(new {
+                                                            Word = inputWord,
+                                                            IsValid = true,
+                                                            TotalScore = expectedScore,
+                                                            
+                            }, options => options.ExcludingMissingMembers());
         }
 
         [Theory]
@@ -56,10 +60,12 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(1, score.WordScores.Count);
-            Assert.Equal(inputWord, score.WordScores.First().Word);
-            Assert.False(score.WordScores.First().IsValid);
-            Assert.Equal(0, score.WordScores.First().TotalScore);
+            score.WordScores.Should().ContainSingle().Which.ShouldBeEquivalentTo(new
+            {
+                Word = inputWord,
+                IsValid = false,
+                TotalScore = 0,
+            }, options => options.ExcludingMissingMembers());
 
         }
 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WordPuzzleScorer.Domain;
 using Xunit;
+using FluentAssertions;
 
 namespace WordPuzzleScorer.Tests
 {
@@ -16,7 +17,7 @@ namespace WordPuzzleScorer.Tests
         [Theory, AutoMoqData]
         public void ReturnTotalScoreZeroWhenNoWords(Score score)
         {
-            Assert.Equal(0, score.TotalScore);
+            score.TotalScore.Should().Be(0);
         }
 
         [Theory, AutoMoqData]
@@ -24,7 +25,7 @@ namespace WordPuzzleScorer.Tests
         {
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
 
-            Assert.Equal(3, score.TotalScore);
+            score.TotalScore.Should().Be(3);
         }
 
         [Theory, AutoMoqData]
@@ -33,7 +34,7 @@ namespace WordPuzzleScorer.Tests
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
             score.WordScores.Add(new WordScore("AAA", true, 0, 3));
 
-            Assert.Equal(6, score.TotalScore);
+            score.TotalScore.Should().Be(6);
         }
 
         [Theory, AutoMoqData]
@@ -41,7 +42,7 @@ namespace WordPuzzleScorer.Tests
         {
             score.WordScores.Add(new WordScore("AAA", false, 0, 3));
             
-            Assert.Equal(0, score.TotalScore);
+            score.TotalScore.Should().Be(0);
         }
     }
 }

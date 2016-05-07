@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WordPuzzleScorer.Domain;
 using Xunit;
+using FluentAssertions;
 
 namespace WordPuzzleScorer.Tests
 {
@@ -22,9 +23,9 @@ namespace WordPuzzleScorer.Tests
 
             var actualScore = defaultScorer.Score(new Word(inputWord, Enumerable.Empty<int>()));
 
-            Assert.Equal(inputWord, actualScore.Word);
-            Assert.Equal(true, actualScore.IsValid);
-            Assert.Equal(expectedTotalScore, actualScore.TotalScore);
+            actualScore.Word.Should().Be(inputWord);
+            actualScore.IsValid.Should().BeTrue();
+            actualScore.TotalScore.Should().Be(expectedTotalScore);
         }
 
         [Theory]
@@ -37,7 +38,7 @@ namespace WordPuzzleScorer.Tests
 
             var actualScore = defaultScorer.Score(new Word(inputWord, Enumerable.Empty<int>()));
 
-            Assert.Equal(expectedTotalScore, actualScore.TotalScore);
+            actualScore.TotalScore.Should().Be(expectedTotalScore);
         }
 
         [Theory, AutoMoqData]
@@ -48,10 +49,9 @@ namespace WordPuzzleScorer.Tests
 
             var actualScore = defaultScorer.Score(new Word(inputWord, new int[] { 2 }));
 
-            Assert.Equal(1, actualScore.LetterBonusIndexes.Count());
-            Assert.Equal(2, actualScore.LetterBonusIndexes.First());
-            Assert.Equal(3, actualScore.BaseScore);
-            Assert.Equal(4, actualScore.TotalScore);
+            actualScore.LetterBonusIndexes.Should().ContainSingle(x => x == 2);
+            actualScore.BaseScore.Should().Be(3);
+            actualScore.TotalScore.Should().Be(4);
         }
     }
 }
