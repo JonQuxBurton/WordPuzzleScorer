@@ -53,5 +53,18 @@ namespace WordPuzzleScorer.Tests
             actualScore.BaseScore.Should().Be(3);
             actualScore.TotalScore.Should().Be(4);
         }
+
+        [Theory, AutoMoqData]
+        public void NotScoreBonusPointIfNoLetter([Frozen] Mock<IWordChecker> wordChecker, DefaultWordScorer defaultScorer)
+        {
+            var inputWord = "AXE";
+            wordChecker.Setup(x => x.IsValid(inputWord)).Returns(true);
+
+            var actualScore = defaultScorer.Score(new Word(inputWord, new int[] { 3 }));
+
+            actualScore.LetterBonusIndexes.Should().BeEmpty();
+            actualScore.BaseScore.Should().Be(3);
+            actualScore.TotalScore.Should().Be(3);
+        }
     }
 }

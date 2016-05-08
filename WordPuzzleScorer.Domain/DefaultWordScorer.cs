@@ -32,15 +32,14 @@ namespace WordPuzzleScorer.Domain
                     isValid = true;
                     baseScore += word.Value.Length;
                 }
-                        
             }
 
             if (isValid && word.BonusTiles != null && word.BonusTiles.Any())
             {
-                bonusScore = 1;
+                bonusScore += word.BonusTiles.Count(x => x < word.Value.Length);
             }
 
-            return new WordScore(word.Value, isValid, baseScore, baseScore + bonusScore, word.BonusTiles);
+            return new WordScore(word.Value, isValid, baseScore, baseScore + bonusScore, word.BonusTiles.Where(x => x < word.Value.Length));
         }
     }
 }
