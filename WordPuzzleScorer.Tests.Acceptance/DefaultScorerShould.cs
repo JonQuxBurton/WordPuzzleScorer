@@ -80,16 +80,23 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(2, score.WordScores.Count);
-            Assert.Equal(inputLine.Split(' ')[0], score.WordScores.First().Word);
-            Assert.True(score.WordScores.First().IsValid);
-            Assert.Equal(expectedScore1, score.WordScores.First().TotalScore);
-            
-            Assert.Equal(inputLine.Split(' ')[1], score.WordScores.Skip(1).First().Word);
-            Assert.True(score.WordScores.Skip(1).First().IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
-
-            Assert.Equal(expectedScore1 + expectedScore2, score.TotalScore);
+            score.WordScores.Should().HaveCount(2);
+            score.WordScores.First().ShouldBeEquivalentTo(new {
+                Word = inputLine.Split(' ')[0],
+                IsValid = true,
+                TotalScore = expectedScore1,
+                BaseScore = expectedScore1,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.WordScores.ElementAt(1).ShouldBeEquivalentTo(new
+            {
+                Word = inputLine.Split(' ')[1],
+                IsValid = true,
+                TotalScore = expectedScore2,
+                BaseScore = expectedScore2,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.TotalScore.Should().Be(expectedScore1 + expectedScore2);
         }
 
         [Theory]
@@ -103,20 +110,32 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(3, score.WordScores.Count);
-            Assert.Equal(inputLine.Split(' ')[0], score.WordScores.First().Word);
-            Assert.True(score.WordScores.First().IsValid);
-            Assert.Equal(expectedScore1, score.WordScores.First().TotalScore);
-
-            Assert.Equal(inputLine.Split(' ')[1], score.WordScores.ElementAt(1).Word);
-            Assert.True(score.WordScores.ElementAt(1).IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
-
-            Assert.Equal(inputLine.Split(' ')[2], score.WordScores.ElementAt(2).Word);
-            Assert.True(score.WordScores.ElementAt(2).IsValid);
-            Assert.Equal(expectedScore2, score.WordScores.ElementAt(2).TotalScore);
-
-            Assert.Equal(expectedScore1 + expectedScore2 + expectedScore3, score.TotalScore);
+            score.WordScores.Should().HaveCount(3);
+            score.WordScores.First().ShouldBeEquivalentTo(new
+            {
+                Word = inputLine.Split(' ')[0],
+                IsValid = true,
+                TotalScore = expectedScore1,
+                BaseScore = expectedScore1,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.WordScores.ElementAt(1).ShouldBeEquivalentTo(new
+            {
+                Word = inputLine.Split(' ')[1],
+                IsValid = true,
+                TotalScore = expectedScore2,
+                BaseScore = expectedScore2,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.WordScores.ElementAt(2).ShouldBeEquivalentTo(new
+            {
+                Word = inputLine.Split(' ')[2],
+                IsValid = true,
+                TotalScore = expectedScore3,
+                BaseScore = expectedScore3,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.TotalScore.Should().Be(expectedScore1 + expectedScore2 + expectedScore3);
         }
 
         [Theory]
@@ -131,10 +150,9 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(1, score.WordScores.First().LetterBonusIndexes.Count());
-            Assert.Equal(doubleLetterBonuesTileIndex, score.WordScores.First().LetterBonusIndexes.First());
-            Assert.Equal(expectedScore, score.WordScores.First().TotalScore);
-            Assert.Equal(expectedScore, score.TotalScore);
+            score.WordScores.First().LetterBonusIndexes.Should().ContainSingle(x => x == doubleLetterBonuesTileIndex);
+            score.WordScores.First().TotalScore.Should().Be(expectedScore);
+            score.TotalScore.Should().Be(expectedScore);
         }
 
         [Theory]
@@ -149,9 +167,9 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(expectedScore1, score.WordScores.First().TotalScore);
-            Assert.Equal(expectedScore2, score.WordScores.ElementAt(1).TotalScore);
-            Assert.Equal(expectedScore1 + expectedScore2, score.TotalScore);
+            score.WordScores.First().TotalScore.Should().Be(expectedScore1);
+            score.WordScores.ElementAt(1).TotalScore.Should().Be(expectedScore2);
+            score.TotalScore.Should().Be(expectedScore1 + expectedScore2);
         }
 
         [Theory]
@@ -166,9 +184,9 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(1, score.WordScores.First().LetterBonusIndexes.Count());
-            Assert.Equal(expectedScore, score.WordScores.First().TotalScore);
-            Assert.Equal(expectedScore, score.TotalScore);
+            score.WordScores.First().LetterBonusIndexes.Should().ContainSingle(x => x == doubleLetterBonuesTileIndex);
+            score.WordScores.First().TotalScore.Should().Be(expectedScore);
+            score.TotalScore.Should().Be(expectedScore);
         }
 
         [Theory, InlineAutoMoqDataAttribute]
@@ -181,13 +199,21 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(2, score.WordScores.Count);
-            Assert.Equal("AXE", score.WordScores.First().Word);
-            Assert.True(score.WordScores.First().IsValid);
-            Assert.Equal(3, score.WordScores.First().TotalScore);
-            Assert.Equal("DUCK", score.WordScores.Skip(1).First().Word);
-            Assert.True(score.WordScores.Skip(1).First().IsValid);
-            Assert.Equal(4, score.WordScores.Skip(1).First().TotalScore);
+            score.WordScores.Should().HaveCount(2);
+            score.WordScores.First().ShouldBeEquivalentTo(new { 
+                Word = "AXE", 
+                IsValid = true, 
+                TotalScore = 3 ,
+                BaseScore = 3,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
+            score.WordScores.ElementAt(1).ShouldBeEquivalentTo(new { 
+                Word = "DUCK", 
+                IsValid = true, 
+                TotalScore = 4,
+                BaseScore = 4 ,
+                LetterBonusIndexes = Enumerable.Empty<int>()
+            });
         }
 
         [Theory, InlineAutoMoqDataAttribute]
@@ -207,8 +233,9 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            Assert.Equal(6, score.WordScores.Count);
-            Assert.Equal(27, score.TotalScore);
+
+            score.WordScores.Should().HaveCount(6);
+            score.TotalScore.Should().Be(27);
         }
     }
 }
