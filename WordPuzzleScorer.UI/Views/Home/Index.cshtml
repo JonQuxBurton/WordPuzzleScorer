@@ -38,8 +38,8 @@
                             { origin: { x: 3, y: 0 }, length: 4, direction: 'vertical', bonusTiles: [0] }];
 
         var PuzzleViewModel = function (letters) {
-            this.letters = ko.observable(letters);
 
+            this.letters = ko.observable(letters);
             this.answer = ko.observableArray();
 
             this.answerBacking = [];
@@ -91,16 +91,44 @@
                     this.answer.push(this.answerBacking[i]);
                 }
 
-                enabledDragAndDrop();
+                enableDragAndDrop();
             };
-
-            this.refreshAnswer();
 
             this.lettersSplit = ko.pureComputed(function () {
 
                 return this.letters().split("");
 
             }, this);
+
+
+            this.getAnswer = function () {
+                var answer = [];
+
+                _(puzzleLines).forEach(function (line) {
+
+                    var answerLine = [];
+
+                    for (var i = 0; i < line.length; i++) {
+                        var x = line.origin.x;
+                        var y = line.origin.y;
+
+                        if (line.direction == 'horizontal') {
+                            x += i;
+                        } else {
+                            y += i;
+                        }
+
+                        var tile = _.find(puzzleViewModel.answerBacking, function (o) { return o.x == x && o.y == y; });
+
+                        answerLine.push(tile.letterValue);
+                    }
+
+                    answer.push(answerLine.join(""));
+                });
+
+                return answer;
+            };
+
         };
 
         var puzzleViewModel = new PuzzleViewModel(letters);
@@ -131,7 +159,7 @@
             }
         });
 
-        function enabledDragAndDrop() {
+        function enableDragAndDrop() {
 
             $(".droppable").droppable({
                 drop: function (event, ui) {
@@ -152,36 +180,14 @@
 
         $('#submitButton').click(function () {
 
-            var answer = [];
-
-            _(puzzleLines).forEach(function (line) {
-
-                var answerLine = [];
-
-                for (var i = 0; i < line.length; i++) {
-                    var x = line.origin.x;
-                    var y = line.origin.y;
-
-                    if (line.direction == 'horizontal') {
-                        x += i;
-                    } else {
-                        y += i;
-                    }
-
-                    var tile = _.find(puzzleViewModel.answerBacking, function (o) { return o.x == x && o.y == y; });
-
-                    answerLine.push(tile.letterValue);
-                }
-
-                answer.push(answerLine.join(""));
-            });
+            var answer = puzzleViewModel.getAnswer();
 
             _.forEach(answer, function (value, index) {
                 $('form').append('<input type="hidden" name="AnswerLines[' + index + ']" value="' + value + '" />');
             });
         });
 
-        enabledDragAndDrop();
+        enableDragAndDrop();
     });
 
 </script>
