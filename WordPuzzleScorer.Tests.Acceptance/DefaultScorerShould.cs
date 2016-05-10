@@ -184,7 +184,7 @@ namespace WordPuzzleScorer.Tests.Acceptance
 
             var score = scorer.Score(answer);
 
-            score.WordScores.First().LetterBonusIndexes.Should().ContainSingle(x => x == doubleLetterBonuesTileIndex);
+            score.WordScores.First().LetterBonusIndexes.Should().BeEmpty();
             score.WordScores.First().TotalScore.Should().Be(expectedScore);
             score.TotalScore.Should().Be(expectedScore);
         }
