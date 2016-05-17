@@ -11,7 +11,7 @@
     <div data-bind="foreach: answer">
         <div data-bind="attr: {'id': 'slot_' + $index()}, css: (isDone) ? 'done' : '', style: { left: (x*7) + 'rem', top: (y*7) + 'rem' }" class="droppable slot">
             <div data-bind="visible: isBonusTile" class="glyphicon glyphicon-star bonusTile"></div>
-            <div data-bind="text: letterValue" class="tileLetter"></div>
+            <div data-bind="text: letter" class="tileLetter"></div>
         </div>
 
     </div>
@@ -33,161 +33,18 @@
 
         var letters = "GOOSEWLWAN";
 
-        var puzzleLines = [{ origin: { x: 0, y: 0 }, length: 5, direction: 'horizontal', bonusTiles : [1, 3] },
-                            { origin: { x: 1, y: 0 }, length: 3, direction: 'vertical', bonusTiles: [0] },
-                            { origin: { x: 3, y: 0 }, length: 4, direction: 'vertical', bonusTiles: [0] }];
-
-        var PuzzleViewModel = function (letters) {
-
-            this.letters = ko.observable(letters);
-            this.answer = ko.observableArray();
-
-            this.answerBacking = [];
-
-            this.init = function () {
-
-                this.answerBacking = [];
-
-                var that = this;
-
-                _(puzzleLines).forEach(function (line) {
-
-                    for (var i = 0; i < line.length; i++)
-                    {
-                        var x = line.origin.x;
-                        var y = line.origin.y;
-
-                        var isBonusTile = false;
-
-                        var bonusTile = _.find(line.bonusTiles, function (item) { return item == i;  });
-
-                        if (!_.isUndefined(bonusTile))
-                        {
-                            isBonusTile = true;
-                        }
-
-                        if (line.direction == 'horizontal') {
-                            x += i;
-                        } else {
-                            y += i;
-                        }
-
-                        var doubleTile = _.find(that.answerBacking, function (o) { return o.x == x && o.y == y; });
-
-                        if (_.isUndefined(doubleTile)) {
-                            that.answerBacking.push({ letterValue: " ", isDone: false, x: x, y: y, isBonusTile: isBonusTile })
-                        }
-                    }
-                });
-
-                this.refreshAnswer();
-            }
-
-            this.refreshAnswer = function () {
-
-                this.answer.removeAll();
-
-                for (var i = 0; i < this.answerBacking.length; i++) {
-                    this.answer.push(this.answerBacking[i]);
-                }
-
-                enableDragAndDrop();
-            };
-
-            this.lettersSplit = ko.pureComputed(function () {
-
-                return this.letters().split("");
-
-            }, this);
-
-
-            this.getAnswer = function () {
-                var answer = [];
-
-                _(puzzleLines).forEach(function (line) {
-
-                    var answerLine = [];
-
-                    for (var i = 0; i < line.length; i++) {
-                        var x = line.origin.x;
-                        var y = line.origin.y;
-
-                        if (line.direction == 'horizontal') {
-                            x += i;
-                        } else {
-                            y += i;
-                        }
-
-                        var tile = _.find(puzzleViewModel.answerBacking, function (o) { return o.x == x && o.y == y; });
-
-                        answerLine.push(tile.letterValue);
-                    }
-
-                    answer.push(answerLine.join(""));
-                });
-
-                return answer;
-            };
-
-        };
+        var puzzleLines = [{ origin: { x: 0, y: 0 }, length: 5, direction: 1, bonusTiles : [1, 3] },
+                            { origin: { x: 1, y: 0 }, length: 3, direction: 2, bonusTiles: [0] },
+                            { origin: { x: 3, y: 0 }, length: 4, direction: 2, bonusTiles: [0] }];
 
         var puzzleViewModel = new PuzzleViewModel(letters);
+        puzzleViewModel.init(puzzleLines);
 
-        function init() {
-            puzzleViewModel.init();
-        }
-
-        init();
+        var wordPuzzleUi = new WordPuzzleUi(puzzleViewModel);
 
         ko.applyBindings(puzzleViewModel);
 
-        var sourceDiv;
-        var sourceLetter;
-
-        $(".draggable").draggable({
-            revert: true,
-            revertDuration: 100,
-            start: function (event, ui) {
-
-                sourceDiv = $(this);
-                sourceLetter = ko.contextFor($(this).find("span").get(0)).$data;
-
-            },
-            stop: function (event, ui) {
-                sourceDiv = null;
-                sourceLetter = null;
-            }
-        });
-
-        function enableDragAndDrop() {
-
-            $(".droppable").droppable({
-                drop: function (event, ui) {
-
-                    sourceDiv.addClass("done");
-                    sourceDiv.draggable("destroy")
-
-                    var slot = $(this).attr('id');
-                    var id = parseInt(slot.split("_")[1]);
-
-                    puzzleViewModel.answerBacking[id].letterValue = sourceLetter;
-                    puzzleViewModel.answerBacking[id].isDone = true;
-
-                    puzzleViewModel.refreshAnswer();
-                }
-            });
-        }
-
-        $('#submitButton').click(function () {
-
-            var answer = puzzleViewModel.getAnswer();
-
-            _.forEach(answer, function (value, index) {
-                $('form').append('<input type="hidden" name="AnswerLines[' + index + ']" value="' + value + '" />');
-            });
-        });
-
-        enableDragAndDrop();
+        wordPuzzleUi.enableDragAndDrop();
     });
 
 </script>
